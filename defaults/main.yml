@@ -1,2 +1,13 @@
 ---
 # defaults file for ansible-deploy-notifications
+#Slack webhook token, part in url after slack.com/services. E.g: https://hooks.slack.com/services/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
+notifications_slack_token: T02FC8HRT/B3QTFE7E0/QA0mMNQv5kVJoAvEEE9Y2qSs
+
+#Message properties. Final Message looks like: "Ansible by Unknown: Unknown App (Unknown Environment) deploying"
+notification_app_name: Unknown App
+notification_environment_type: Unknown Instance
+notification_deploy_info: deploying
+notification_deploy_user: Unknown
+
+#Color of message. Allowed values: normal, good, warning, danger
+notification_color: normal

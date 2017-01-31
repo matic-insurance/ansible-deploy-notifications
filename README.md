@@ -2,38 +2,61 @@ Role Name
 =========
 [![Build Status](https://travis-ci.org/matic-insurance/ansible-deploy-notifications.svg?branch=master)](https://travis-ci.org/matic-insurance/ansible-deploy-notifications)
 
-A brief description of the role goes here.
+Ansible role to send notifications to the slack channel about deploy status. 
+Role detects current user on host system to explain who triggered deploy
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Get webhook url from slack and extract token part: 
+  - URL: `https://hooks.slack.com/services/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`
+  - Token is `T02FC8HRT/B3QTFE7E0/QA0mMNQv5kVJoAvEEE9Y2qSs`
+  
+2. Specify token as `notifications_slack_token` variable
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Here is the list of default variables with default values:
+```
+notification_app_name: Unknown App
+notification_environment_type: Unknown Instance
+notification_deploy_info: deploying
+notification_color: normal
+```
+
+Final slack message with these variables will look like: `Unknown App (Unknown Environment) deploying` 
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```
+- hosts: all
+  gather_facts: false
+  
+  roles:
+    - role: matic-insurance.deploy-notification
+      notification_deploy_info: 'deploy started'
+      notification_color: 'warning'
+      notifications_slack_token: '{{ slack_token }}'
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Actual task notification is executed only once on local host.
+ 
+In our projects we have notification about start and end of deploy to see when deploy is finished
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Matic is a communication platform that connects lenders and borrowers originating a new home loan. A borrower now knows where they are in the loan process and what they need to do to complete the loan.

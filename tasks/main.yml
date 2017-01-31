@@ -1,2 +1,15 @@
 ---
-# tasks file for ansible-deploy-notifications
+- name: Get the deploy user name
+  become: false
+  local_action: command whoami
+  register: deploy_user
+
+- name: Send slack notification
+  slack:
+    token: '{{ notifications_slack_token }}'
+    msg: '{{ notification_app_name }} ({{ notification_environment_type }}) {{ notification_deploy_info }}'
+    color: '{{ notification_color }}'
+    username: 'Ansible by {{ deploy_user.stdout | default(notification_deploy_user) }}'
+  delegate_to: localhost
+  run_once: true
+  become: false

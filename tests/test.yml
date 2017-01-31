@@ -3,3 +3,5 @@
   connection: local
   roles:
     - role: ../..
+      notification_deploy_info: 'test started'
+      notification_color: 'good'
