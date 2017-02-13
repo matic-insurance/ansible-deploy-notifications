@@ -1,6 +1,7 @@
 ---
 - name: Get the deploy user name
   become: false
+  run_once: true
   local_action: command whoami
   register: deploy_user
 
