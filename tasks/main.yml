@@ -19,7 +19,7 @@
           \n Affected hosts:"
     color: '{{ notification_color }}'
     username: 'Ansible by {{ deploy_user.stdout | default(notification_deploy_user) }}'
-    attachments: '{{ slack_attachment }}'
+    attachments: '{{ slack_attachment | unique }}'
   delegate_to: localhost
   run_once: true
   become: false
