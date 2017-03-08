@@ -4,15 +4,24 @@
   run_once: true
   local_action: command whoami
   register: deploy_user
-  changed_when: False
+  changed_when: false
+
+- name: Create affected host list
+  set_fact:
+    slack_attachment: "{{ slack_attachment|default([]) + [ {'text': '- '+item} ] }}"
+  with_items: '{{ ansible_play_hosts }}'
+  changed_when: false
+  no_log: true
 
 - name: Send slack notification
   slack:
     token: '{{ notifications_slack_token }}'
-    msg: '{{ notification_app_name }} ({{ notification_environment_type }}) {{ notification_deploy_info }}'
+    msg: "{{ notification_app_name }} ({{ notification_environment_type }}) {{ notification_deploy_info }}
+          \n Affected hosts:"
     color: '{{ notification_color }}'
     username: 'Ansible by {{ deploy_user.stdout | default(notification_deploy_user) }}'
+    attachments: '{{ slack_attachment }}'
   delegate_to: localhost
   run_once: true
   become: false
-  changed_when: False
+  changed_when: false
