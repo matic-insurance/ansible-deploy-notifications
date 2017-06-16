@@ -8,6 +8,7 @@ notification_app_name: Unknown App
 notification_environment_type: Unknown Instance
 notification_deploy_info: deploying
 notification_deploy_user: Unknown
+notification_deploy_changes: unknown changes
 
 #Color of message. Allowed values: normal, good, warning, danger
 notification_color: normal

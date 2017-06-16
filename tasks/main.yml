@@ -6,20 +6,28 @@
   register: deploy_user
   changed_when: false
 
+- name: Define deploy changes
+  set_fact:
+    slack_deployed_changes: "{{ {'title': 'Changes', 'text': notification_deploy_changes } }}"
+
 - name: Create affected host list
   set_fact:
-    slack_attachment: "{{ slack_attachment|default([]) + [ {'text': '- '+item} ] }}"
-  with_items: '{{ ansible_play_hosts }}'
+    slack_affected_hosts: "{{ slack_affected_hosts|default('') + '\n- '+item }}"
+  with_items: '{{ ansible_play_hosts | unique }}'
+  changed_when: false
+
+- name: Create notification info
+  set_fact:
+    slack_attachment: "{{ [slack_deployed_changes, {'title': 'Affected hosts', 'text': slack_affected_hosts}] }}"
   changed_when: false
 
 - name: Send slack notification
   slack:
     token: '{{ notifications_slack_token }}'
-    msg: "{{ notification_app_name }} ({{ notification_environment_type }}) {{ notification_deploy_info }}
-          \n Affected hosts:"
+    msg: "{{ notification_app_name }} ({{ notification_environment_type }}) {{ notification_deploy_info }}"
     color: '{{ notification_color }}'
     username: 'Ansible by {{ deploy_user.stdout | default(notification_deploy_user) }}'
-    attachments: '{{ slack_attachment | unique }}'
+    attachments: '{{ slack_attachment }}'
   delegate_to: localhost
   run_once: true
   become: false
